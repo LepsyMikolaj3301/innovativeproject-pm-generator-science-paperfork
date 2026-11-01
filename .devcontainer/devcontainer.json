@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
 {
-	"name": "${localEnv:USER}-devcontainer",
+	"name": "genpm-devcontainer",
 
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
@@ -12,48 +12,39 @@
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "spark-jupyter",
-	"remoteUser": "${localEnv:USER}",
+	"remoteUser": "devuser",
 	"updateRemoteUserUID": true,
-	"initializeCommand": "[ -n \"$DEVCONTAINER_SSH_PORT\" ] || (echo 'ERROR: Run start_env.sh first and open VS Code from that shell' && exit 1)",
-  	"appPort": "${localEnv:DEVCONTAINER_SSH_PORT}:22",
+
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
-	"workspaceFolder": "/home/${localEnv:USER}/app/apps",
-  	"workspaceMount": "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/app/apps,type=bind",
+	"workspaceFolder": "/home/devuser/app",
+
 	"remoteEnv": {
-		"UV_PROJECT_ENVIRONMENT": "/home/${localEnv:USER}/app/apps/.venv",
-		"VIRTUAL_ENV": "/home/${localEnv:USER}/app/apps/.venv"
+		"UV_PROJECT_ENVIRONMENT": "/home/devuser/app/.venv",
+		"VIRTUAL_ENV": "/home/devuser/app/.venv"
 	},
+
 	"features": {
-		// Add this first!
 		"ghcr.io/devcontainers/features/node": {
 			"version": "lts"
-		},
-		// This is the one currently failing because it can't find 'node'
-		"ghcr.io/devcontainer-config/features/dot-config:4": {
-			"workspaces": "/workspaces"
 		}
 	},
-	"mounts": [
-		"source=/home/shared_dir,target=/home/${localEnv:USER}/app/apps/apps/generator/data/shared_dir,type=bind,consistency=cached"
-    ],
+
 	"customizations": {
 		"vscode": {
-		"extensions": [
-			"ms-python.python",
-			"ms-python.vscode-pylance",
-			"charliermarsh.ruff",
-			"njpwerner.autodocstring",
-			"ms-toolsai.jupyter"
-		]
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"charliermarsh.ruff",
+				"njpwerner.autodocstring",
+				"ms-toolsai.jupyter",
+				"Vue.volar"
+			]
 		}
 	},
-	"runArgs": ["--memory=4g", "--memory-swap=8g"],
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [4040, 4041, 7077, 18080],
 
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	// "runServices": [],
@@ -61,13 +52,6 @@
 	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
 	// "shutdownAction": "none",
 
-	// Uncomment the next line to run commands after the container is created.
 	// PLEASE REMEMBER TO ADD PACKAGES TO A SPECIFIC PACKAGE
 	"postCreateCommand": "uv sync && uv run pre-commit install"
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
 }

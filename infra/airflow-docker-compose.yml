@@ -23,11 +23,11 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_MAX_OVERFLOW: '20'
     AIRFLOW__DATABASE__SQL_ALCHEMY_POOL_RECYCLE: '1800'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-apache-airflow-providers-apache-spark}
-    AIRFLOW_CONN_SPARK_DEFAULT: "spark://${USER}-genpm-spark:7077"
+    AIRFLOW_CONN_SPARK_DEFAULT: "spark://genpm-spark:7077"
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
     PYSPARK_DRIVER_PYTHON: /opt/airflow/genpm-venv/bin/python
     GENPM_PYSPARK_PYTHON: /opt/airflow/genpm-venv/bin/python
-    GENPM_SPARK_EXECUTOR_PYTHON: ${GENPM_SPARK_EXECUTOR_PYTHON:-/home/${USER:-hostuser}/app/.venv/bin/python3}
+    GENPM_SPARK_EXECUTOR_PYTHON: /home/devuser/app/.venv/bin/python3
     GENPM_SCHEMA_PATH: /opt/airflow/shared/pm_schema_columns.json
     # Dev override: ship the live-mounted genpm to executors via --py-files at submit time so code
     # edits run without rebuilding images. Unset in prod, where the pinned wheel in the image is used.
@@ -39,7 +39,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
 
-    - ../apps/airflow/dags:/opt/airflow/dags/${USER}
+    - ../apps/airflow/dags:/opt/airflow/dags/genpm
     - ../apps/generator:/opt/airflow/generator
     - ../shared:/opt/airflow/shared:ro
     - ../apps/generator/apps:/opt/airflow/spark-apps
@@ -48,7 +48,7 @@ x-airflow-common:
 
   networks:
     - default
-    - shared-network
+    - genpm-network
 
   depends_on:
     &airflow-common-depends-on
@@ -73,10 +73,11 @@ services:
     restart: always
     networks:
       - default
-      - shared-network
+      - genpm-network
 
   airflow-apiserver:
     <<: *airflow-common
+    container_name: genpm-airflow-apiserver
     command: api-server
     environment:
       <<: *airflow-common-env
@@ -204,5 +205,5 @@ volumes:
   postgres-airflow-volume:
 
 networks:
-  shared-network:
+  genpm-network:
     external: true

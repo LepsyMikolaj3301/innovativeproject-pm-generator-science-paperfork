@@ -47,7 +47,7 @@ ENV AWS_SDK_VERSION=1.12.262
 RUN wget --quiet -O ${SPARK_HOME}/jars/hadoop-aws-${HADOOP_JAR_VERSION}.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_JAR_VERSION}/hadoop-aws-${HADOOP_JAR_VERSION}.jar \
     && wget --quiet -O ${SPARK_HOME}/jars/aws-java-sdk-bundle-${AWS_SDK_VERSION}.jar https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/${AWS_SDK_VERSION}/aws-java-sdk-bundle-${AWS_SDK_VERSION}.jar
 
-ARG USERNAME=hostuser
+ARG USERNAME=devuser
 ARG USER_UID=1000
 ARG USER_GID=1000
 

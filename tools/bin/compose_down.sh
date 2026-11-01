@@ -10,10 +10,10 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-echo "Composing down containers of ${USER}"
+echo "Stopping genpm containers..."
 
 if $DEL_VOLUMES; then
-  docker compose -p "${USER}_project" down -v
+  docker compose --env-file .env -f infra/docker-compose.yml down -v
 else
-  docker compose -p "${USER}_project" down
+  docker compose --env-file .env -f infra/docker-compose.yml down
 fi

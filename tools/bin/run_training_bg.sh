@@ -2,8 +2,8 @@
 
 set -e
 
-CONTAINER="${USER}-genpm-spark"
-WORKDIR="/home/${USER}/app/apps/generator"
+CONTAINER="genpm-spark"
+WORKDIR="/home/devuser/app/apps/generator"
 PYTHON_FILE=""
 
 usage() {
@@ -34,7 +34,7 @@ LOG_FILE="/tmp/training_$(date +%Y%m%d_%H%M%S).log"
 
 if ! docker ps --format "{{.Names}}" | grep -q "^${CONTAINER}$"; then
   echo "Error: container '${CONTAINER}' is not running."
-  echo "Start it first with: ./tools/bin/start_env.sh"
+  echo "Start it first with: ./tools/bin/start_services.sh"
   exit 1
 fi
 
